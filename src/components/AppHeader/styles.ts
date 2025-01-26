@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         height: 52,
-        // backgroundColor: 'red'
     },
     balanceContainer: {
         alignItems: 'flex-end'
