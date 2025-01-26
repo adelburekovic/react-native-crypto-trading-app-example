@@ -2,6 +2,8 @@ import { useColorScheme, View } from "react-native";
 import AppChart from "../../components/AppChart";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
+import AppHeader from "../../components/AppHeader";
+import styles from "./styles";
 
 const HomeScreen = (): React.JSX.Element => {
     const isDarkMode = useColorScheme() === 'dark';
@@ -19,10 +21,10 @@ const HomeScreen = (): React.JSX.Element => {
 
     return (
         <View
-            style={{
-                backgroundColor: isDarkMode ? Colors.black : Colors.white,
-                flex: 1,
-            }}>
+            style={styles.container}>
+            <AppHeader
+                balance="2580"
+                balanceInFiat="1245561" />
             <AppChart data={testData} />
         </View>
     );
