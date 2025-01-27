@@ -47,15 +47,11 @@ export const executeTrade = createAsyncThunk<
     try {
         dispatch(setTradesLoading(true));
 
-        // Create trade object
         const trade: Trade = {
             id: Date.now().toString(),
             ...tradeDetails,
             timestamp: new Date().toISOString(),
         };
-
-        // Here you would typically send the trade to your API
-        // await sendTradeToAPI(trade);
 
         dispatch(addTrade(trade));
 
