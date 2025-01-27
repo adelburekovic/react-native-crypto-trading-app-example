@@ -4,14 +4,17 @@ import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart"
 import AppHeader from "../../components/AppHeader";
 import styles from "./styles";
 import { AppButton } from "../../components/AppButton";
-import React from "react";
+import React, { useState } from "react";
 import { TransactionHistoryView } from "../../components/TransactionHistoryView";
 import { Transaction } from "../../types/transaction";
 import { BTCAndPNLView } from "../../components/BTCAndPNLView";
+import { TradeModal } from "../TradeModal";
 
 const HomeScreen = (): React.JSX.Element => {
     const isDarkMode = useColorScheme() === 'dark';
+    const [isTradeModalVisible, setIsTradeModalVisible] = useState(false);
 
+    // TEST DATA
     const testData: LineChartData = {
         labels: ['68700', '68800', '68900', '69000', '69100', '69200'],
         datasets: [
@@ -75,7 +78,7 @@ const HomeScreen = (): React.JSX.Element => {
     ];
 
     const onTradePress = () => {
-        // TODO: Handle trade
+        setIsTradeModalVisible(true);
     };
 
     return (
@@ -88,6 +91,12 @@ const HomeScreen = (): React.JSX.Element => {
             <AppChart data={testData} />
             <AppButton title={"Trade"} onPress={onTradePress} />
             <TransactionHistoryView transactions={mockTransactions} />
+            <TradeModal
+                isVisible={isTradeModalVisible}
+                onClose={() => setIsTradeModalVisible(false)}
+                onBuy={(amount) => console.log('Buy:', amount)}
+                onSell={(amount) => console.log('Sell:', amount)}
+            />
         </View>
     );
 };
