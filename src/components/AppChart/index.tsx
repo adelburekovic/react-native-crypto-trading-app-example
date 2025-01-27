@@ -27,10 +27,10 @@ const AppChart: React.FC<AppChartProps> = ({
     decimalPlaces: 0,
     color: (opacity = 1) => `rgba(144, 218, 217, ${opacity})`, // Light teal for the line
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    fillShadowGradient: 'rgba(144, 218, 217, 0.2)', // Fill color
-    fillShadowGradientFrom: 'rgba(144, 218, 217, 0.2)', // Very light teal fill
+    fillShadowGradient: '#74CDDC',
+    fillShadowGradientFrom: '#74CDDC', // Very light teal fill
     fillShadowGradientTo: colors.white,
-    fillShadowGradientOpacity: 0.3,
+    fillShadowGradientOpacity: 0.8,
     propsForDots: {
       r: '0',
       strokeWidth: '0',
@@ -57,10 +57,10 @@ const AppChart: React.FC<AppChartProps> = ({
       withInnerLines={false}
       withDots={false}
       withShadow={true}
-      verticalLabelRotation={0}
       withVerticalLabels={false}
       withVerticalLines={false}
       withHorizontalLines={false}
+      segments={5}
     />
   );
 };
