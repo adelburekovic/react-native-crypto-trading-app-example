@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import {
     Modal,
     View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    Platform,
     Pressable,
-    TextInput,
 } from 'react-native';
 import styles from './styles';
 import { DecimalPadInput } from '../../components/DecimalPadInput';
@@ -65,10 +60,12 @@ export const TradeModal: React.FC<TradeModalProps> = ({
                         <View style={styles.buttonContainer}>
                             <AppButton
                                 title="Buy"
+                                containerStyle={{flexGrow: 1}}
                                 onPress={() => onBuy(eurAmount)}
                             />
                             <AppButton
                                 title="Sell"
+                                containerStyle={{flexGrow: 1}}
                                 onPress={() => onSell(eurAmount)}
                             />
                         </View>

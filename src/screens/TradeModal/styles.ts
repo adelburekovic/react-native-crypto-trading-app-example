@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: layout.padding.extraLarge,
-    width: '100%'
+    width: '100%',
   }
 });
 

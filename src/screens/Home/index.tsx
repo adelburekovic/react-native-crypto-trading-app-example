@@ -9,6 +9,7 @@ import { TransactionHistoryView } from "../../components/TransactionHistoryView"
 import { Transaction } from "../../types/transaction";
 import { BTCAndPNLView } from "../../components/BTCAndPNLView";
 import { TradeModal } from "../TradeModal";
+import { layout } from "../../constants/layout";
 
 const HomeScreen = (): React.JSX.Element => {
     const isDarkMode = useColorScheme() === 'dark';
@@ -97,6 +98,7 @@ const HomeScreen = (): React.JSX.Element => {
                 onBuy={(amount) => console.log('Buy:', amount)}
                 onSell={(amount) => console.log('Sell:', amount)}
             />
+            <View style={{ height: layout.padding.huge }} />
         </View>
     );
 };
