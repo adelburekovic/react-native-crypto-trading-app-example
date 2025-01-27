@@ -16,6 +16,7 @@ export const layout = {
     height: {
       button: 48,
       textInput: 48,
+      chart: 257
     },
     fontSize: {
       extraSmall: 12,

@@ -1,4 +1,4 @@
-import { useColorScheme, View } from "react-native";
+import { ScrollView, useColorScheme, View } from "react-native";
 import AppChart from "../../components/AppChart";
 import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
 import AppHeader from "../../components/AppHeader";
@@ -10,6 +10,7 @@ import { Transaction } from "../../types/transaction";
 import { BTCAndPNLView } from "../../components/BTCAndPNLView";
 import { TradeModal } from "../TradeModal";
 import { layout } from "../../constants/layout";
+import { Spacer } from "../../components/Spacer";
 
 const HomeScreen = (): React.JSX.Element => {
     const isDarkMode = useColorScheme() === 'dark';
@@ -88,17 +89,25 @@ const HomeScreen = (): React.JSX.Element => {
             <AppHeader
                 balance="2580"
                 balanceInFiat="1245561" />
-            <BTCAndPNLView price={69820} pnl={12.3} />
-            <AppChart data={testData} />
-            <AppButton title={"Trade"} onPress={onTradePress} />
-            <TransactionHistoryView transactions={mockTransactions} />
-            <TradeModal
-                isVisible={isTradeModalVisible}
-                onClose={() => setIsTradeModalVisible(false)}
-                onBuy={(amount) => console.log('Buy:', amount)}
-                onSell={(amount) => console.log('Sell:', amount)}
-            />
-            <View style={{ height: layout.padding.huge }} />
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContent}
+                bounces={true}
+            >
+                <Spacer size={layout.padding.extraLarge} />
+                <BTCAndPNLView price={69820} pnl={12.3} />
+                <AppChart data={testData} />
+                <Spacer size={layout.padding.extraLarge} />
+                <AppButton title={"Trade"} onPress={onTradePress} />
+                <Spacer size={layout.padding.extraLarge} />
+                <TransactionHistoryView transactions={mockTransactions} />
+                <TradeModal
+                    isVisible={isTradeModalVisible}
+                    onClose={() => setIsTradeModalVisible(false)}
+                    onBuy={(amount) => console.log('Buy:', amount)}
+                    onSell={(amount) => console.log('Sell:', amount)}
+                />
+            </ScrollView>
         </View>
     );
 };
