@@ -7,6 +7,7 @@ import { AppButton } from "../../components/AppButton";
 import React from "react";
 import { TransactionHistoryView } from "../../components/TransactionHistoryView";
 import { Transaction } from "../../types/transaction";
+import { BTCAndPNLView } from "../../components/BTCAndPNLView";
 
 const HomeScreen = (): React.JSX.Element => {
     const isDarkMode = useColorScheme() === 'dark';
@@ -83,6 +84,7 @@ const HomeScreen = (): React.JSX.Element => {
             <AppHeader
                 balance="2580"
                 balanceInFiat="1245561" />
+            <BTCAndPNLView price={69820} pnl={12.3} />
             <AppChart data={testData} />
             <AppButton title={"Trade"} onPress={onTradePress} />
             <TransactionHistoryView transactions={mockTransactions} />

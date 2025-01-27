@@ -5,6 +5,7 @@ export const layout = {
         large: 12,
     },
     padding: {
+        extraSmall: 4,
         small: 8,
         medium: 12,
         large: 16,
