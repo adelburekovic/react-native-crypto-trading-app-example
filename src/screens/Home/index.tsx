@@ -4,6 +4,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
 import AppHeader from "../../components/AppHeader";
 import styles from "./styles";
+import { AppButton } from "../../components/AppButton";
 
 const HomeScreen = (): React.JSX.Element => {
     const isDarkMode = useColorScheme() === 'dark';
@@ -19,6 +20,10 @@ const HomeScreen = (): React.JSX.Element => {
         ]
     };
 
+    const onTradePress = () => {
+        // TODO: Handle trade
+    };
+
     return (
         <View
             style={styles.container}>
@@ -26,6 +31,7 @@ const HomeScreen = (): React.JSX.Element => {
                 balance="2580"
                 balanceInFiat="1245561" />
             <AppChart data={testData} />
+            <AppButton title={"Trade"} onPress={onTradePress}/>
         </View>
     );
 };
