@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: layout.padding.extraLarge,
         paddingBottom: layout.padding.huge,
-        backgroundColor: colors.white,
-        // backgroundColor: 'red',
+        // backgroundColor: colors.white,
+        backgroundColor: 'red',
         flex: 1,
     }
 });
