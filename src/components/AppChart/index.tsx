@@ -4,6 +4,7 @@ import { LineChart } from 'react-native-chart-kit';
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { ViewStyle } from 'react-native';
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
+import { layout } from '../../constants/layout';
 
 interface AppChartProps {
   data: LineChartData;
@@ -16,7 +17,7 @@ interface AppChartProps {
 
 const AppChart: React.FC<AppChartProps> = ({
   data,
-  width = Dimensions.get('window').width - 20,
+  width = Dimensions.get('window').width - layout.padding.extraLarge * 2,
   height = 220,
   chartConfig = {
     backgroundColor: '#ffffff',
