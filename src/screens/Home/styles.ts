@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: layout.padding.extraLarge,
         paddingBottom: layout.padding.huge,
         backgroundColor: colors.white,
-        flex: 1
+        flex: 1,
     }
 });
 

@@ -40,7 +40,6 @@ const AppChart: React.FC<AppChartProps> = ({
   },
   bezier = false,
   style = {
-    marginVertical: 8,
     borderRadius: 16,
     paddingRight: 64
   }
