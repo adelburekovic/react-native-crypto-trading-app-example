@@ -4,14 +4,10 @@ import { styles } from './styles';
 
 export interface AppButtonProps extends TouchableOpacityProps {
     title: string;
-    variant?: 'primary' | 'secondary';
-    size?: 'small' | 'medium' | 'large';
 }
 
 export const AppButton: React.FC<AppButtonProps> = ({
     title,
-    variant = 'primary',
-    size = 'medium',
     ...props
 }) => {
     return (
