@@ -5,6 +5,7 @@ import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { ViewStyle } from 'react-native';
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
 import { layout } from '../../constants/layout';
+import { colors } from '../../theme/colors';
 
 interface AppChartProps {
   data: LineChartData;
@@ -18,17 +19,17 @@ interface AppChartProps {
 const AppChart: React.FC<AppChartProps> = ({
   data,
   width = Dimensions.get('window').width - layout.padding.extraLarge * 2,
-  height = 220,
+  height = layout.height.chart,
   chartConfig = {
-    backgroundColor: '#ffffff',
-    backgroundGradientFrom: '#ffffff',
-    backgroundGradientTo: '#ffffff',
+    backgroundColor: colors.white,
+    backgroundGradientFrom: colors.white,
+    backgroundGradientTo: colors.white,
     decimalPlaces: 0,
     color: (opacity = 1) => `rgba(144, 218, 217, ${opacity})`, // Light teal for the line
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     fillShadowGradient: 'rgba(144, 218, 217, 0.2)', // Fill color
     fillShadowGradientFrom: 'rgba(144, 218, 217, 0.2)', // Very light teal fill
-    fillShadowGradientTo: '#ffffff', // Fade to white
+    fillShadowGradientTo: colors.white,
     fillShadowGradientOpacity: 0.3,
     propsForDots: {
       r: '0',
