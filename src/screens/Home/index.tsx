@@ -1,10 +1,12 @@
 import { useColorScheme, View } from "react-native";
 import AppChart from "../../components/AppChart";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { LineChartData } from "react-native-chart-kit/dist/line-chart/LineChart";
 import AppHeader from "../../components/AppHeader";
 import styles from "./styles";
 import { AppButton } from "../../components/AppButton";
+import React from "react";
+import { TransactionHistoryView } from "../../components/TransactionHistoryView";
+import { Transaction } from "../../types/transaction";
 
 const HomeScreen = (): React.JSX.Element => {
     const isDarkMode = useColorScheme() === 'dark';
@@ -20,6 +22,57 @@ const HomeScreen = (): React.JSX.Element => {
         ]
     };
 
+    const mockTransactions: Transaction[] = [
+        {
+            type: 'Buy',
+            amount: '+0.0031 BTC',
+            price: '-50.23 €',
+            timestamp: '12:58:58'
+        },
+        {
+            type: 'Sell',
+            amount: '-0.00221 BTC',
+            price: '+50 €',
+            timestamp: '11:23:58'
+        },
+        {
+            type: 'Buy',
+            amount: '+0.00221 BTC',
+            price: '-50 €',
+            timestamp: '12:58:58'
+        },
+        {
+            type: 'Sell',
+            amount: '-0.00221 BTC',
+            price: '+50 €',
+            timestamp: '11:23:58'
+        },
+        {
+            type: 'Buy',
+            amount: '+0.00221 BTC',
+            price: '-50 €',
+            timestamp: '12:58:58'
+        },
+        {
+            type: 'Sell',
+            amount: '-0.00221 BTC',
+            price: '+50 €',
+            timestamp: '11:23:58'
+        },
+        {
+            type: 'Buy',
+            amount: '+0.00221 BTC',
+            price: '-50 €',
+            timestamp: '12:58:58'
+        },
+        {
+            type: 'Sell',
+            amount: '-0.00221 BTC',
+            price: '+50 €',
+            timestamp: '11:23:58'
+        }
+    ];
+
     const onTradePress = () => {
         // TODO: Handle trade
     };
@@ -31,7 +84,8 @@ const HomeScreen = (): React.JSX.Element => {
                 balance="2580"
                 balanceInFiat="1245561" />
             <AppChart data={testData} />
-            <AppButton title={"Trade"} onPress={onTradePress}/>
+            <AppButton title={"Trade"} onPress={onTradePress} />
+            <TransactionHistoryView transactions={mockTransactions} />
         </View>
     );
 };
