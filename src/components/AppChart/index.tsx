@@ -22,26 +22,51 @@ const AppChart: React.FC<AppChartProps> = ({
   height = layout.height.chart,
   bezier = false
 }) => {
-
   const yAxisLabels = useMemo(() => {
     if (!data.datasets?.[0]?.data) return [];
-
     const values = data.datasets[0].data;
     const lastValue = values[values.length - 1];
     const maxValue = Math.max(...values);
     const minValue = Math.min(...values);
 
-    const topRange = maxValue - lastValue;
-    const bottomRange = lastValue - minValue;
-    const maxRange = Math.max(topRange, bottomRange);
+    if (lastValue === maxValue) {
+      const step = (maxValue - minValue) / 5;
+      return [
+        maxValue,
+        maxValue - step,
+        maxValue - (step * 2),
+        maxValue - (step * 3),
+        maxValue - (step * 4),
+        minValue
+      ].map(val => val.toFixed(0));
+    }
+
+    if (lastValue === minValue) {
+      const step = (maxValue - minValue) / 5;
+      return [
+        maxValue,
+        maxValue - step,
+        maxValue - (step * 2),
+        maxValue - (step * 3),
+        maxValue - (step * 4),
+        minValue
+      ].map(val => val.toFixed(0));
+    }
+
+    const range = maxValue - minValue;
+    const stepToLast = (lastValue - minValue) / 3;
+    const closestBelow = lastValue - stepToLast;
+    
+    const upperRange = maxValue - lastValue;
+    const upperStep = upperRange / 2;
 
     return [
       maxValue,
-      lastValue + (maxRange * 2 / 3),
-      lastValue + (maxRange * 1 / 3),
+      lastValue + upperStep,
       lastValue,
-      lastValue - (maxRange * 1 / 3),
-      lastValue - (maxRange * 2 / 3),
+      closestBelow,
+      closestBelow - stepToLast,
+      minValue
     ].map(val => val.toFixed(0));
   }, [data]);
 
@@ -93,13 +118,13 @@ const AppChart: React.FC<AppChartProps> = ({
       width={width}
       height={height}
       chartConfig={chartConfig}
-      bezier={false}
+      bezier={bezier}
       withInnerLines={false}
       withDots={false}
       withShadow={true}
       withVerticalLabels={false}
       withVerticalLines={false}
-      withHorizontalLines={true}
+      withHorizontalLines={false}
       segments={5}
       fromZero={false}
       horizontalLabelRotation={0}
