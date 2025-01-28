@@ -1,39 +1,35 @@
 import React from 'react';
-import { TextInput, View, Text, StyleSheet } from 'react-native';
+import { TextInput, View, Text, StyleSheet, TextInputProps } from 'react-native';
 import styles from './styles';
+import { formatEUR } from '../../utils/currency';
 
 type DecimalPadInputProps = {
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  symbol: string;
-};
+    value: string;
+    onChangeText: (text: string) => void;
+    placeholder?: string;
+    symbol: string;
+} & Omit<TextInputProps, 'keyboardType'>; // This allows all TextInput props except keyboardType
 
 export const DecimalPadInput = ({
-  value,
-  onChangeText,
-  placeholder = '0.00',
-  symbol,
+    value,
+    onChangeText,
+    placeholder = '0.00',
+    symbol,
+    ...textFieldProps
 }: DecimalPadInputProps) => {
-  const formatValue = (val: string) => {
-    const cleanValue = val.replace(/[^0-9.]/g, '');
-    const parts = cleanValue.split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return parts.join('.');
-  };
-
-  return (
-    <View style={styles.container}>
-      <TextInput
-        value={formatValue(value)}
-        onChangeText={onChangeText}
-        style={styles.input}
-        keyboardType="decimal-pad"
-        textAlign="right"
-        selectTextOnFocus
-        placeholder={placeholder}
-      />
-      <Text style={styles.symbol}>{symbol}</Text>
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <TextInput
+                value={value}
+                onChangeText={onChangeText}
+                style={styles.input}
+                keyboardType="decimal-pad"
+                textAlign="right"
+                selectTextOnFocus
+                placeholder={placeholder}
+                {...textFieldProps}
+            />
+            <Text style={styles.symbol}>{symbol}</Text>
+        </View>
+    );
 };

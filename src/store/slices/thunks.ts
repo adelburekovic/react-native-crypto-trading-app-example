@@ -1,66 +1,50 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AppDispatch } from '.';
+import { RootState } from '../../types/store';
 import { addTrade, setTradesError, setTradesLoading } from './tradesSlice';
 import { Trade } from '../../types/store';
 import { updateBalance, updatePnL } from './portfolioSlice';
+import { calculateTradeAmounts } from '../../utils/tradeCalculator';
+import { calculatePnL } from '../../utils/pnlCalculator';
 
-const mockPortfolioData = {
-    balance: {
-        btc: 0.12345678,
-        fiat: 224.01
-    },
-    pnl: 12.3,
-    transactions: [
-        {
-            id: '1',
-            type: 'Buy',
-            amount: 0.0031,
-            price: 50.23,
-            timestamp: '12:58:58'
-        },
-        {
-            id: '2',
-            type: 'Sell',
-            amount: 0.00221,
-            price: 50,
-            timestamp: '11:23:58'
-        }
-    ],
-    priceData: {
-        currentPrice: 69820.12,
-        historicalPrices: [
-            { timestamp: Date.now() - 3600000 * 6, price: 68700 },
-            { timestamp: Date.now() - 3600000 * 5, price: 68900 },
-            { timestamp: Date.now() - 3600000 * 4, price: 69050 },
-            { timestamp: Date.now() - 3600000 * 3, price: 68800 },
-            { timestamp: Date.now() - 3600000 * 2, price: 69100 },
-            { timestamp: Date.now() - 3600000, price: 68900 }
-        ]
-    }
-};
-
-export const executeTrade = createAsyncThunk<
-    void,
-    { type: 'Buy' | 'Sell'; amount: number; price: number },
-    { dispatch: AppDispatch }
->('trades/executeTrade', async (tradeDetails, { dispatch }) => {
+export const executeTrade = createAsyncThunk(
+  'trades/executeTrade',
+  async (
+    tradeDetails: { type: 'Buy' | 'Sell'; amount: number; price: number },
+    { dispatch, getState }
+  ) => {
     try {
-        dispatch(setTradesLoading(true));
+      dispatch(setTradesLoading(true));
+      
+      const state = getState() as RootState;
+      const currentBalance = state.portfolio.balance;
+      const currentPrice = state.prices.currentPrice;
 
-        const trade: Trade = {
-            id: Date.now().toString(),
-            ...tradeDetails,
-            timestamp: new Date().toISOString(),
-        };
+      const { btcAmount, eurValue } = calculateTradeAmounts(tradeDetails);
+      
+      const trade: Trade = {
+        id: Date.now().toString(),
+        type: tradeDetails.type,
+        btcAmount: parseFloat(btcAmount.toFixed(4)),
+        eurValue,
+        price: tradeDetails.price,
+        timestamp: new Date().toISOString(),
+      };
 
-        dispatch(addTrade(trade));
+      const newBalance = {
+        btc: currentBalance.btc + btcAmount,
+        fiat: currentBalance.fiat + eurValue
+      };
 
-        dispatch(updateBalance(mockPortfolioData.balance));
-        dispatch(updatePnL(mockPortfolioData.pnl));
+      const allTrades = [...state.trades.trades, trade];
+      const pnlResult = calculatePnL(allTrades, currentPrice);
 
+      dispatch(addTrade(trade));
+      dispatch(updateBalance(newBalance));
+      dispatch(updatePnL(pnlResult.totalPnL));
     } catch (error) {
-        dispatch(setTradesError(error instanceof Error ? error.message : 'Failed to execute trade'));
+      dispatch(setTradesError(error instanceof Error ? error.message : 'Failed to execute trade'));
     } finally {
-        dispatch(setTradesLoading(false));
+      dispatch(setTradesLoading(false));
     }
-});
+  }
+);
