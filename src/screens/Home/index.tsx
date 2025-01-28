@@ -10,13 +10,12 @@ import { TradeModal } from "../TradeModal";
 import { layout } from "../../constants/layout";
 import { Spacer } from "../../components/Spacer";
 import { useBitcoinData } from "../../hooks/useBitcoinData";
-import { useSelector } from "react-redux";
 import { RootState } from "../../types/store";
 import { useAppSelector } from "../../store/slices";
 
 const HomeScreen = (): React.JSX.Element => {
     const {
-        chartData,
+        historicalPrices,
         currentPrice,
         loading,
         error,
@@ -65,7 +64,7 @@ const HomeScreen = (): React.JSX.Element => {
             >
                 <Spacer size={layout.padding.extraLarge} />
                 <BTCAndPNLView price={currentPrice} pnl={portfolio.pnl} />
-                {chartData && <AppChart data={chartData} />}
+                {historicalPrices && <AppChart historicalPrices={historicalPrices} />}
                 <AppButton title="Trade" onPress={onTradePress} />
                 <Spacer size={layout.padding.extraLarge} />
                 <TransactionHistoryView transactions={transactions} />

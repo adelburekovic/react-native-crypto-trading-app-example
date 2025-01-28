@@ -1,64 +1,63 @@
 import { useState, useEffect, useCallback } from 'react';
-import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
-import { BitcoinError, BitcoinService } from '../services/BitcoinService';
+import { BitcoinService } from '../services/BitcoinService';
+import { ProcessedPricePoint } from '../types/bitcoinService.types';
+import { BitcoinBaseError } from '../types/errors';
 
 interface UseBitcoinDataReturn {
-    chartData: LineChartData | null;
-    currentPrice: number;
-    formattedPrice: string;
-    loading: boolean;
-    error: BitcoinError | null;
-    refetch: () => Promise<void>;
+  historicalPrices: ProcessedPricePoint[];
+  currentPrice: number;
+  loading: boolean;
+  error: BitcoinBaseError | null;
+  refetch: () => Promise<void>;
 }
 
 export const useBitcoinData = (
-    updateInterval = 60000
+  updateInterval = 60000
 ): UseBitcoinDataReturn => {
-    const [chartData, setChartData] = useState<LineChartData | null>(null);
-    const [currentPrice, setCurrentPrice] = useState<number>(0);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<BitcoinError | null>(null);
+  const [historicalPrices, setHistoricalPrices] = useState<ProcessedPricePoint[]>([]);
+  const [currentPrice, setCurrentPrice] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<BitcoinBaseError | null>(null);
 
-    const fetchData = useCallback(async () => {
-        try {
-            setError(null);
-            const [historicalData, price] = await Promise.all([
-                BitcoinService.fetchHistoricalPrices(),
-                BitcoinService.getCurrentPrice()
-            ]);
+  const fetchData = useCallback(async () => {
+    try {
+      setError(null);
+      const [prices, latestPrice] = await Promise.all([
+        BitcoinService.fetchHistoricalPrices(),
+        BitcoinService.getCurrentPrice()
+      ]);
+      
+      setHistoricalPrices(prices);
+      setCurrentPrice(latestPrice);
+    } catch (err) {
+      const errorToSet = err instanceof BitcoinBaseError 
+        ? err 
+        : new BitcoinBaseError('An unexpected error occurred');
+      setError(errorToSet);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-            setChartData(historicalData);
-            setCurrentPrice(price);
-        } catch (err) {
-            setError(err instanceof BitcoinError ? err : new BitcoinError(
-                'An unexpected error occurred',
-                'UNKNOWN_ERROR'
-            ));
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+  const refetch = useCallback(async () => {
+    setLoading(true);
+    await fetchData();
+  }, [fetchData]);
 
-    const refetch = useCallback(async () => {
-        setLoading(true);
-        await fetchData();
-    }, [fetchData]);
+  useEffect(() => {
+    fetchData();
 
-    useEffect(() => {
-        fetchData();
+    if (updateInterval > 0) {
+      const intervalId = setInterval(fetchData, updateInterval);
+      return () => clearInterval(intervalId);
+    }
+  }, [fetchData, updateInterval]);
 
-        if (updateInterval > 0) {
-            const intervalId = setInterval(fetchData, updateInterval);
-            return () => clearInterval(intervalId);
-        }
-    }, [fetchData, updateInterval]);
-
-    return {
-        chartData,
-        currentPrice,
-        formattedPrice: BitcoinService.formatPrice(currentPrice),
-        loading,
-        error,
-        refetch
-    };
+  return {
+    historicalPrices,
+    currentPrice,
+    loading,
+    error,
+    refetch
+  };
 };
