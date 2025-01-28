@@ -3,12 +3,12 @@ import { Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { ViewStyle } from 'react-native';
-import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
 import { layout } from '../../constants/layout';
 import { colors } from '../../theme/colors';
+import { ProcessedPricePoint } from '../../types/bitcoinService.types';
 
 interface AppChartProps {
-  data: LineChartData;
+  historicalPrices: ProcessedPricePoint[];
   width?: number;
   height?: number;
   chartConfig?: AbstractChartConfig;
@@ -17,31 +17,29 @@ interface AppChartProps {
 }
 
 const AppChart: React.FC<AppChartProps> = ({
-  data,
+  historicalPrices,
   width = Dimensions.get('window').width - layout.padding.extraLarge * 2,
   height = layout.height.chart,
   bezier = false
 }) => {
+  const chartData = useMemo(() => ({
+    labels: historicalPrices.map(point => point.price.toFixed(0)),
+    datasets: [{
+      data: historicalPrices.map(point => point.price),
+      color: (opacity = 1) => `rgba(32, 178, 170, ${opacity})`,
+      strokeWidth: 2
+    }]
+  }), [historicalPrices]);
+
   const yAxisLabels = useMemo(() => {
-    if (!data.datasets?.[0]?.data) return [];
-    const values = data.datasets[0].data;
+    if (!historicalPrices.length) return [];
+    
+    const values = historicalPrices.map(point => point.price);
     const lastValue = values[values.length - 1];
     const maxValue = Math.max(...values);
     const minValue = Math.min(...values);
 
-    if (lastValue === maxValue) {
-      const step = (maxValue - minValue) / 5;
-      return [
-        maxValue,
-        maxValue - step,
-        maxValue - (step * 2),
-        maxValue - (step * 3),
-        maxValue - (step * 4),
-        minValue
-      ].map(val => val.toFixed(0));
-    }
-
-    if (lastValue === minValue) {
+    if (lastValue === maxValue || lastValue === minValue) {
       const step = (maxValue - minValue) / 5;
       return [
         maxValue,
@@ -56,7 +54,6 @@ const AppChart: React.FC<AppChartProps> = ({
     const range = maxValue - minValue;
     const stepToLast = (lastValue - minValue) / 3;
     const closestBelow = lastValue - stepToLast;
-    
     const upperRange = maxValue - lastValue;
     const upperStep = upperRange / 2;
 
@@ -68,15 +65,17 @@ const AppChart: React.FC<AppChartProps> = ({
       closestBelow - stepToLast,
       minValue
     ].map(val => val.toFixed(0));
-  }, [data]);
+  }, [historicalPrices]);
 
   const formatYLabel = (value: string): string => {
     if (!yAxisLabels.length) return value;
+    
     const numValue = parseFloat(value);
     const closest = yAxisLabels.reduce((prev, curr) => {
       return Math.abs(parseFloat(curr) - numValue) <
         Math.abs(parseFloat(prev) - numValue) ? curr : prev;
     });
+    
     return closest;
   };
 
@@ -112,9 +111,13 @@ const AppChart: React.FC<AppChartProps> = ({
     }
   };
 
+  if (!historicalPrices.length) {
+    return null;
+  }
+
   return (
     <LineChart
-      data={data}
+      data={chartData}
       width={width}
       height={height}
       chartConfig={chartConfig}
