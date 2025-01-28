@@ -15,7 +15,8 @@ export interface PortfolioState {
 export interface Trade {
     id: string;
     type: 'Buy' | 'Sell';
-    amount: number;
+    btcAmount: number;
+    eurValue: number;
     price: number;
     timestamp: string;
 }

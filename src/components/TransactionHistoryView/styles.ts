@@ -4,11 +4,17 @@ import { layout } from '../../constants/layout';
 
 export const styles = StyleSheet.create({
   container: {
+    padding: layout.padding.medium,
     backgroundColor: colors.gray,
     borderRadius: layout.borderRadius.large,
+    flex: 1
   },
-  scrollContent: {
+  noTranasctionsContainer: {
+    alignItems: 'center',
     padding: layout.padding.medium,
+    backgroundColor: colors.gray,
+    borderRadius: layout.borderRadius.large,
+    flex: 1
   },
   row: {
     flexDirection: 'row',

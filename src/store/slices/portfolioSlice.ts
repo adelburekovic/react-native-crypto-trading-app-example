@@ -3,8 +3,8 @@ import { PortfolioState } from '../../types/store';
 
 const initialState: PortfolioState = {
     balance: {
-        btc: 0,
-        fiat: 0,
+        btc: 0.5,
+        fiat: 5000,
     },
     pnl: 0,
 };

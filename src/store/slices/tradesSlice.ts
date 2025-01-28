@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TradesState, Trade } from '../../types/store';
+import { Trade, TradesState } from '../../types/store';
 
 const initialState: TradesState = {
   trades: [],

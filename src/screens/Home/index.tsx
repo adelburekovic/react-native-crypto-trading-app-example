@@ -1,38 +1,35 @@
-import { ScrollView, useColorScheme, View, ActivityIndicator, Text } from "react-native";
+import { ScrollView, View, ActivityIndicator, Text } from "react-native";
 import AppChart from "../../components/AppChart";
 import AppHeader from "../../components/AppHeader";
 import styles from "./styles";
 import { AppButton } from "../../components/AppButton";
 import React, { useState } from "react";
 import { TransactionHistoryView } from "../../components/TransactionHistoryView";
-import { Transaction } from "../../types/transaction";
 import { BTCAndPNLView } from "../../components/BTCAndPNLView";
 import { TradeModal } from "../TradeModal";
 import { layout } from "../../constants/layout";
 import { Spacer } from "../../components/Spacer";
 import { useBitcoinData } from "../../hooks/useBitcoinData";
+import { useSelector } from "react-redux";
+import { RootState } from "../../types/store";
+import { useAppSelector } from "../../store/slices";
 
 const HomeScreen = (): React.JSX.Element => {
-    const isDarkMode = useColorScheme() === 'dark';
-    const [isTradeModalVisible, setIsTradeModalVisible] = useState(false);
-
     const {
         chartData,
         currentPrice,
-        formattedPrice,
         loading,
         error,
         refetch
     } = useBitcoinData();
 
-    const mockTransactions: Transaction[] = [
-        {
-            type: 'Buy',
-            amount: '+0.0031 BTC',
-            price: '-50.23 €',
-            timestamp: '12:58:58'
-        },
-    ];
+    const portfolio = useAppSelector((state: RootState) => state.portfolio);
+    const transactions = useAppSelector(state => state.trades.trades);
+
+    const formattedBTC = portfolio.balance.btc.toFixed(8);
+    const formattedFiat = portfolio.balance.fiat.toFixed(2);
+
+    const [isTradeModalVisible, setIsTradeModalVisible] = useState(false);
 
     const onTradePress = () => {
         setIsTradeModalVisible(true);
@@ -58,8 +55,8 @@ const HomeScreen = (): React.JSX.Element => {
     return (
         <View style={styles.container}>
             <AppHeader
-                balance="2580"
-                balanceInFiat={formattedPrice}
+                balance={formattedBTC}
+                balanceInFiat={formattedFiat}
             />
             <ScrollView
                 showsVerticalScrollIndicator={false}
@@ -67,16 +64,14 @@ const HomeScreen = (): React.JSX.Element => {
                 bounces={true}
             >
                 <Spacer size={layout.padding.extraLarge} />
-                <BTCAndPNLView price={currentPrice} pnl={12.3} />
+                <BTCAndPNLView price={currentPrice} pnl={portfolio.pnl} />
                 {chartData && <AppChart data={chartData} />}
                 <AppButton title="Trade" onPress={onTradePress} />
                 <Spacer size={layout.padding.extraLarge} />
-                <TransactionHistoryView transactions={mockTransactions} />
+                <TransactionHistoryView transactions={transactions} />
                 <TradeModal
                     isVisible={isTradeModalVisible}
                     onClose={() => setIsTradeModalVisible(false)}
-                    onBuy={(amount) => console.log('Buy:', amount)}
-                    onSell={(amount) => console.log('Sell:', amount)}
                 />
             </ScrollView>
         </View>
