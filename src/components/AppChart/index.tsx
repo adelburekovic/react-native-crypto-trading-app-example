@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
@@ -20,27 +20,98 @@ const AppChart: React.FC<AppChartProps> = ({
   data,
   width = Dimensions.get('window').width - layout.padding.extraLarge * 2,
   height = layout.height.chart,
-  chartConfig = {
+  bezier = false
+}) => {
+  const yAxisLabels = useMemo(() => {
+    if (!data.datasets?.[0]?.data) return [];
+    const values = data.datasets[0].data;
+    const lastValue = values[values.length - 1];
+    const maxValue = Math.max(...values);
+    const minValue = Math.min(...values);
+
+    if (lastValue === maxValue) {
+      const step = (maxValue - minValue) / 5;
+      return [
+        maxValue,
+        maxValue - step,
+        maxValue - (step * 2),
+        maxValue - (step * 3),
+        maxValue - (step * 4),
+        minValue
+      ].map(val => val.toFixed(0));
+    }
+
+    if (lastValue === minValue) {
+      const step = (maxValue - minValue) / 5;
+      return [
+        maxValue,
+        maxValue - step,
+        maxValue - (step * 2),
+        maxValue - (step * 3),
+        maxValue - (step * 4),
+        minValue
+      ].map(val => val.toFixed(0));
+    }
+
+    const range = maxValue - minValue;
+    const stepToLast = (lastValue - minValue) / 3;
+    const closestBelow = lastValue - stepToLast;
+    
+    const upperRange = maxValue - lastValue;
+    const upperStep = upperRange / 2;
+
+    return [
+      maxValue,
+      lastValue + upperStep,
+      lastValue,
+      closestBelow,
+      closestBelow - stepToLast,
+      minValue
+    ].map(val => val.toFixed(0));
+  }, [data]);
+
+  const formatYLabel = (value: string): string => {
+    if (!yAxisLabels.length) return value;
+    const numValue = parseFloat(value);
+    const closest = yAxisLabels.reduce((prev, curr) => {
+      return Math.abs(parseFloat(curr) - numValue) <
+        Math.abs(parseFloat(prev) - numValue) ? curr : prev;
+    });
+    return closest;
+  };
+
+  const chartConfig: AbstractChartConfig = {
     backgroundColor: colors.white,
     backgroundGradientFrom: colors.white,
     backgroundGradientTo: colors.white,
     decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
-    fillShadowGradient: 'red',
-    fillShadowGradientFrom: 'red',
-    fillShadowGradientTo: colors.white,
-    fillShadowGradientOpacity: 1,
+    color: (opacity = 1) => `rgba(32, 178, 170, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(32, 178, 170, ${opacity})`,
+    fillShadowGradient: 'rgba(32, 178, 170, 0.2)',
+    fillShadowGradientFrom: 'rgba(32, 178, 170, 0.2)',
+    fillShadowGradientTo: 'rgba(255, 255, 255, 0)',
+    fillShadowGradientOpacity: 0.6,
     propsForDots: {
       r: '0',
       strokeWidth: '0',
     },
+    propsForLabels: {
+      fontSize: 10,
+      alignmentBaseline: 'middle',
+      textAnchor: 'end',
+    },
+    formatYLabel,
     style: {
-      borderRadius: layout.borderRadius.extraLarge
+      borderRadius: layout.borderRadius.extraLarge,
+      paddingRight: 0,
+    },
+    propsForBackgroundLines: {
+      strokeDasharray: "6 6",
+      strokeWidth: 1,
+      stroke: "rgba(128, 128, 128, 0.2)",
     }
-  },
-  bezier = false
-}) => {
+  };
+
   return (
     <LineChart
       data={data}
@@ -55,6 +126,8 @@ const AppChart: React.FC<AppChartProps> = ({
       withVerticalLines={false}
       withHorizontalLines={false}
       segments={5}
+      fromZero={false}
+      horizontalLabelRotation={0}
     />
   );
 };
