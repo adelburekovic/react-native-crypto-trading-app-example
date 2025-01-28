@@ -25,26 +25,21 @@ const AppChart: React.FC<AppChartProps> = ({
     backgroundGradientFrom: colors.white,
     backgroundGradientTo: colors.white,
     decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(144, 218, 217, ${opacity})`, // Light teal for the line
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    fillShadowGradient: 'rgba(144, 218, 217, 0.2)', // Fill color
-    fillShadowGradientFrom: 'rgba(144, 218, 217, 0.2)', // Very light teal fill
+    color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
+    fillShadowGradient: 'red',
+    fillShadowGradientFrom: 'red',
     fillShadowGradientTo: colors.white,
-    fillShadowGradientOpacity: 0.3,
+    fillShadowGradientOpacity: 1,
     propsForDots: {
       r: '0',
       strokeWidth: '0',
     },
     style: {
-      borderRadius: 16
+      borderRadius: layout.borderRadius.extraLarge
     }
   },
-  bezier = false,
-  style = {
-    padding: 0,
-    borderRadius: 16,
-    paddingRight: 64
-  }
+  bezier = false
 }) => {
   return (
     <LineChart
@@ -53,14 +48,13 @@ const AppChart: React.FC<AppChartProps> = ({
       height={height}
       chartConfig={chartConfig}
       bezier={bezier}
-      style={style}
       withInnerLines={false}
       withDots={false}
       withShadow={true}
-      verticalLabelRotation={0}
       withVerticalLabels={false}
       withVerticalLines={false}
       withHorizontalLines={false}
+      segments={5}
     />
   );
 };

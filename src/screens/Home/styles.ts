@@ -12,7 +12,13 @@ const styles = StyleSheet.create({
         // backgroundColor: colors.white,
         backgroundColor: 'red',
         flex: 1,
-    }
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 24,
+    },
 });
 
 export default styles;
